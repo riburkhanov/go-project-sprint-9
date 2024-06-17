@@ -31,7 +31,7 @@ func Generator(ctx context.Context, ch chan<- int64, fn func(int64)) {
 func Worker(in <-chan int64, out chan<- int64) {
 	// 2. Функция Worker
 	defer close(out)
-	if v, ok := <-in; ok {
+	for v := range in {
 		out <- v
 		time.Sleep(1 * time.Millisecond)
 	}
@@ -83,7 +83,6 @@ func main() {
 			wg.Done()
 		}(outs[i], int64(i))
 	}
-	wg.Wait()
 
 	go func() {
 		// ждём завершения работы всех горутин для outs
